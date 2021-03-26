@@ -1,1 +1,1 @@
-# TPS_MN
+# Trabajos Prácticos - Métodos Numéricos
