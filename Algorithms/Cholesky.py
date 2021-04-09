@@ -1,5 +1,6 @@
 import numpy as np
-from Algorithms.Solve_Triangular import solve_triangular
+from Solve_Triangular import solve_triangular
+from scipy.linalg import lstsq
 
 def cholesky(A : np.ndarray) -> np.ndarray:
     h, w = A.shape
@@ -17,23 +18,23 @@ def cholesky(A : np.ndarray) -> np.ndarray:
     return G
 
 def leastsq_chol(A : np.ndarray, b : np.ndarray) -> np.ndarray:
-    AT_A = np.dot(A.T, A)
-    AT_b = np.dot(A.T, b)
-
-    G = cholesky(AT_A)
-    w = solve_triangular(G, AT_b, lower=True)
+    G = cholesky(A.T.dot(A))
+    w = solve_triangular(G, A.T.dot(b), lower=True)
     return solve_triangular(G.T, w, lower=False)
 
 
 if __name__ == '__main__':
+    tests = 1000
 
-    A = np.random.randint(-10, 10, (5, 5))
+    for i in range(tests):
 
-    G = cholesky(A.T.dot(A))
+        A = np.random.randint(-10, 10, (np.random.randint(50, 200), np.random.randint(2, 51)))
+        b = np.random.randint(-10, 10, (A.shape[0], 1))
 
-    print(np.allclose(G.dot(G.T), A.T.dot(A)))
+        worked = np.allclose(lstsq(A, b)[0], leastsq_chol(A, b))
 
-    print(A.T.dot(A))
-    print(G.dot(G.T))
+        if not worked:
+            print('Failed')
+            exit()
 
-    #input()
+    print('Worked')

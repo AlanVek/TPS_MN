@@ -18,11 +18,8 @@ def cholesky(A : np.ndarray) -> np.ndarray:
     return G
 
 def leastsq(A : np.ndarray, b : np.ndarray) -> np.ndarray:
-    AT_A = np.dot(A.T, A)
-    AT_b = np.dot(A.T, b)
-
-    G = cholesky(AT_A)
-    w = solve_triangular(G, AT_b, lower=True)
+    G = cholesky(A.T.dot(A))
+    w = solve_triangular(G, A.T.dot(b), lower=True)
     return solve_triangular(G.T, w, lower=False)
 
 def test() -> None:

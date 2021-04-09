@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.sparse import eye as sparse_eye
-from Algorithms.Solve_Triangular import solve_triangular
+from Solve_Triangular import solve_triangular
+from scipy.linalg import lstsq
 
 def lu(A : np.array, pivot_nonzero = False):
 
@@ -29,29 +30,28 @@ def lu(A : np.array, pivot_nonzero = False):
 
 
 def leastsq_lu(A : np.array, b : np.array) -> np.array:
-    p, l, u = lu(A)
-    y = p.T.dot(b)
+    p, l, u = lu(A.T.dot(A))
+    y = p.T.dot(A.T.dot(b))
     return solve_triangular(u, solve_triangular(l, y, lower = True), lower = False)
 
 
+
 if __name__ == '__main__':
-    print('Working...')
-    for i in range(10):
+    tests = 1000
 
-         mat = np.random.randint(-100, 100, (5, 5))
-         P, L, U = lu(mat, pivot_nonzero=True)
+    for i in range(tests):
 
+        A = np.random.randint(-10, 10, (np.random.randint(50, 200), np.random.randint(2, 51)))
+        b = np.random.randint(-10, 10, (A.shape[0], 1))
 
-         recreated = P.dot(L.dot(U))
-         worked = np.allclose(mat, recreated, atol=.1)
+        worked = np.allclose(lstsq(A, b)[0], leastsq_lu(A, b))
 
-         if not worked:
-             print(f'Failed at i = {i}')
-             print(mat)
-             print(recreated)
-             exit()
+        if not worked:
+            print('Failed')
+            exit()
 
-    print('Worked!')
+    print('Worked')
+
 #input()
 
 

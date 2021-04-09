@@ -1,5 +1,5 @@
 import numpy as np
-from Algorithms.LU import lu
+from LU import lu
 
 
 def gauss(A : np.array, b : np.array) -> np.array:

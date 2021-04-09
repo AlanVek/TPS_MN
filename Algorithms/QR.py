@@ -1,5 +1,6 @@
 import numpy as np
-from Algorithms.Solve_Triangular import solve_triangular
+from Solve_Triangular import solve_triangular
+from scipy.linalg import lstsq
 
 def gram_schmidt(base):
     h, w = base.shape
@@ -18,7 +19,7 @@ def gram_schmidt(base):
 
     return GS, R
 
-def QR(base):
+def qr(base):
     h, w = base.shape
 
     Q = np.zeros((h, h))
@@ -34,18 +35,24 @@ def QR(base):
     return Q, R
 
 def leastsq_qr(A : np.array, b : np.array) -> np.array:
-    q, r = QR(A)
-    y = q.T.dot(b)
+    q, r = qr(A.T.dot(A))
+    y = q.T.dot(A.T.dot(b))
     return solve_triangular(r, y, lower = False)
 
 
 if __name__ == '__main__':
-    A = np.random.randint(-10, 10, (120, 130))
-    Q, R = QR(A)
+    tests = 1000
+    for i in range(tests):
 
-    worked_a = np.allclose(Q.dot(R), A)
-    worked_q = np.allclose(Q.dot(Q.T), np.eye(*Q.shape))
-    worked_r = np.allclose(np.tril(R, -1), np.zeros(R.shape))
+        A = np.random.randint(-10, 10, (np.random.randint(50, 200), np.random.randint(2, 51)))
+        b = np.random.randint(-10, 10, (A.shape[0], 1))
 
-    print(f'Worked: {worked_a and worked_q and worked_r}')
+        worked = np.allclose(lstsq(A, b)[0], leastsq_qr(A, b))
+
+        if not worked:
+            print('Failed')
+            exit()
+
+    print('Worked')
+
 
