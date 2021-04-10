@@ -7,12 +7,12 @@ def cholesky(A : np.ndarray) -> np.ndarray:
     G = np.zeros((w, h))
 
     if h == w:
-        # if np.allclose(A, A.T) and np.all(np.linalg.eigvals(A) > 0):
-        for i in range(h):
-            G[i, i] = np.sqrt(A[i, i] - np.dot(G[i, :i], G[i, :i]))
-            G[i + 1:w, i] = (A[i, i+1:w] - G[i + 1:w, :i].dot(G[i, :i])) / G[i, i]
-        # else:
-        #     raise Exception('Input error: Matrix must be positive semidefinite')
+        if np.all(np.linalg.eigvals(A) > 0):
+            for i in range(h):
+                G[i, i] = np.sqrt(A[i, i] - np.dot(G[i, :i], G[i, :i]))
+                G[i + 1:w, i] = (A[i, i+1:w] - G[i + 1:w, :i].dot(G[i, :i])) / G[i, i]
+        else:
+            raise Exception('Input error: Matrix must be positive semidefinite')
     else:
         raise Exception('Dimension error: Matrix must be square')
     return G

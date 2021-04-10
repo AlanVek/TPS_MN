@@ -17,7 +17,6 @@ def bkwd_subs(A : np.ndarray, b : np.ndarray) -> np.ndarray:
     return solve_triangular(A, b, lower = False)
 
 
-
 if __name__ == '__main__':
     A = np.array([[1, 0, 0], [2, 3, 0], [10, 4, 8]])
     b = np.array([[2], [4], [6]])
