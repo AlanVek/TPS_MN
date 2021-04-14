@@ -22,6 +22,12 @@ def leastsq_chol(A : np.ndarray, b : np.ndarray) -> np.ndarray:
     w = solve_triangular(G, A.T.dot(b), lower=True)
     return solve_triangular(G.T, w, lower=False)
 
+def det_chol_abs(A : np.array) -> float:
+    try:
+        G = cholesky(A.T.dot(A))
+        return np.prod(np.diagonal(G))
+    except RuntimeWarning: return 0
+
 
 if __name__ == '__main__':
     tests = 1000

@@ -26,7 +26,6 @@ def gauss(A : np.array, b : np.array) -> np.array:
 
 def gauss2(A : np.array, b : np.array, pivot_nonzero = False) -> np.array:
     mat = np.append(A, b, axis = 1)
-
     return lu(mat, pivot_nonzero = pivot_nonzero)[2]
 
 if __name__ == '__main__':

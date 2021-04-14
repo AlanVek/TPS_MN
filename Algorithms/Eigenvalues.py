@@ -38,7 +38,12 @@ def solve_eig_2by2(T, nosecond):
 
 def roots(poly):
     poly = poly[np.argmax(poly != 0) : ]
+    if poly.size <= 1: return np.array([])
 
+    zeros_first = np.argmax(poly[::-1] != 0)
+
+    res = [0] * zeros_first
+    poly = poly[ : poly.size - zeros_first]
     if poly.size <= 1: return np.array([])
 
     A = np.zeros((poly.size - 1, poly.size - 1))
@@ -46,8 +51,7 @@ def roots(poly):
     A[:, -1] = -poly[1:][::-1] / poly[0]
     A += np.eye(*A.shape, -1)
 
-    return eigenvalues(A)
-
+    return np.append(res, eigenvalues(A))
 
 
 if __name__ == '__main__':
@@ -68,7 +72,9 @@ if __name__ == '__main__':
     #
     # print('Worked')
 
-    poly = np.random.randint(-10, 10, np.random.randint(2, 10))
-    print(poly)
-    print(np.sort(roots(poly).round(3)))
-    print(np.sort(np.roots(poly).round(3)))
+    for i in range(50):
+        poly = np.random.randint(-10, 10, np.random.randint(2, 10))
+        print(poly)
+        my_roots = roots(poly)
+        print(np.allclose(np.sort(np.roots(poly)), np.sort(my_roots)))
+
