@@ -1,37 +1,28 @@
 from QR import qr
 import numpy as np
 
-def eigenvalues(A):
+def eigenvalues(A, method = 'qr'):
     if A.shape == (1, 1): return np.array(A[0])
-
     T = A.copy()
     ITER = 5500
-
     for i in range(ITER):
         q, r = qr(T)
         T = r.dot(q)
-
     res, tot = np.zeros(T.shape[0], dtype = complex), 0
-    if np.isclose(T[1, 0], 0): res[0], tot = T[0, 0], 1
-
+    if abs(T[1, 0]) < 1e-12: res[0], tot = T[0, 0], 1
     for i in range(T.shape[0]-1):
         nosecond = False
         if i < T.shape[0] - 2:
-            nosecond = np.isclose(T[i+1, i], 0) and not np.isclose(T[i+2, i+1], 0)
-
+            nosecond = abs(T[i+1, i]) < 1e-12 and not abs(T[i+2, i+1]) < 1e-12
         newvals = solve_eig_2by2(T[i:i+2, i:i+2], nosecond=nosecond)
-
         res[tot : newvals.size + tot] = newvals
         tot += newvals.size
-
         if tot >= T.shape[0]: break
-
     return res
-
 
 def solve_eig_2by2(T, nosecond):
     if not T.shape == (2, 2): raise Exception('Pifiaste')
-    if np.isclose(T[1, 0], 0, atol = 1e-6):
+    if abs(T[1, 0]) < 1e-6:
         return np.array([T[1, 1]])[int(nosecond):]
     return np.roots([1, -T[0,0] - T[1,1], T[1,1]*T[0,0] - T[1, 0] * T[0, 1]])
 
@@ -77,4 +68,3 @@ if __name__ == '__main__':
         print(poly)
         my_roots = roots(poly)
         print(np.allclose(np.sort(np.roots(poly)), np.sort(my_roots)))
-

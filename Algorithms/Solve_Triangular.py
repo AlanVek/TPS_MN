@@ -2,7 +2,7 @@ import numpy as np
 
 def solve_triangular(G : np.ndarray, y : np.ndarray, lower = False) -> np.ndarray:
     h, w = G.shape
-    res = np.zeros((h, 1))
+    res = np.zeros(y.shape)
 
     if h == w:
         for i in np.arange(h)[::(-1) ** (not lower)]:

@@ -59,7 +59,3 @@ def test() -> None:
             return
 
     print('Ok!')
-if __name__ == '__main__':
-
-    test()
-    input()

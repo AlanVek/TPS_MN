@@ -1,45 +1,76 @@
 import numpy as np
 
-def bisec(f, a, b, tol, maxiter):
+def bisec(f, a : float, b : float, tol : float = 1e-15, maxiter : int = 100):
+
+    """ Solves f(x) = 0 """
 
     fa, fb = f(a), f(b)
-    if fa * fb > 0 or maxiter <= 0:
-        return None
+    if not fa: return a
+    if not fb: return b
+    if np.sign(fa) == np.sign(fb) or maxiter <= 0: return None
 
-    for k in range(maxiter):
+    for _ in range(maxiter):
         c = (a + b) / 2
         fc = f(c)
+        if not fc: break
 
-        if fa * fc < 0: b, fb = c, fc
+        if np.sign(fa) != np.sign(fc) < 0: b, fb = c, fc
         else: a, fa = c, fc
 
-        if abs(a - b) < 2 * tol:
-            break
+        if abs(a - b) <= 2 * tol: break
 
-    return c, k + 1
+    return c
 
 
-def fixed_point(f, maxiter = 1000, x = 1, tol = 1e-6):
-    xk_1 = xk = x
+def fixed_point(f, x, tol, maxiter):
+
+    """ Solves x = f(x) """
+
     for k in range(maxiter):
-        xk = f(xk_1)
-        if abs(xk - xk_1) < tol: break
-        xk_1 = xk
+        xk = f(x)
+        if abs(xk - x) <= tol: break
+        x = xk
 
-    return xk, k
-
-func_bisec = lambda x: x - np.exp(np.sqrt(x**2 + .5)) - x * (1 + x**10) / (1 + x) - 9.115 * x
-
-func_fp = lambda x: np.exp(np.sqrt(x**2 + .5)) - x * (1 + x**10) / (1 + x) - 9.115 * x
+    return x
 
 
+def newton_raphson(f, deriv, x_ini, tol, maxiter):
 
-res_b = bisec(func_bisec, 0, 3, tol = 1e-9, maxiter = 100)
-print(res_b)
+    """ Solves f(x) = 0 """
+
+    for i in range(maxiter):
+        x_k = x_ini - f(x_ini) / deriv(x_ini)
+        if abs(x_k - x_ini) <= tol: return x_k
+        x_ini = x_k
+
+    return x_ini
 
 
+def secante(f, x_ini1, x_ini2, tol, maxiter):
 
-res_fp = fixed_point(func_fp, tol = 1e-9, maxiter = 100, x = 0)
-print(res_fp)
+    """ Solves f(x) = 0 """
 
-print(np.sin(res_fp[0]))
+    f_1, f_2 = f(x_ini1), f(x_ini2)
+    for i in range(maxiter):
+        x_k = x_ini2 - f_2 / (f_2 - f_1) * (x_ini2 - x_ini1)
+        if abs(x_k - x_ini2) <= tol: return x_k
+
+        x_ini1, f_1, x_ini2, f_2 = x_ini2, f_2, x_k, f(x_k)
+
+    return x_ini2
+
+if __name__ == '__main__':
+
+    f = lambda x: x**3
+    deriv = lambda x: 3 * x**2
+
+    g = lambda x: 3 / x**2
+
+    tol, maxiter, x_ini = 1e-9, 1000, -1
+    x_ini2 = 3
+
+    # print(secante(f, x_ini, x_ini2, tol, maxiter))
+    # print(newton_raphson(f, deriv, x_ini, tol, maxiter))
+    print(bisec(f, x_ini, x_ini2, tol, maxiter))
+    # print(fixed_point(g, x_ini, tol, maxiter))
+

@@ -5,8 +5,8 @@ from scipy.special import factorial
 from scipy.misc import derivative as scipy_deriv
 
 def find_poly(data_in, data_out, order):
-    A = data_in.reshape(-1, 1) ** np.arange(order, -1, -1)
-    return leastsq_lu(A, data_out).reshape(-1)
+    A = data_in.reshape(-1, 1) ** range(order, -1, -1)
+    return leastsq_lu(A, data_out).ravel()
 
 def derivate(t, f, order, poly_order):
     if order > poly_order: return np.zeros(1)
@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     fig, (ax1, ax2) = plt.subplots(2)
 
-    poly = np.poly1d(find_poly(t, y(t), 30))
+    poly = np.poly1d(find_poly(t, y(t), 40))
     polyd = np.poly1d(derivate(t, y(t), n, 40))
 
     ax1.plot(t, y(t), label = 'Input', linewidth = 4)

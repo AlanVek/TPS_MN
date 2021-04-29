@@ -9,19 +9,19 @@ def lu(A : np.array, pivot_nonzero = False):
     P = sparse_eye(h, dtype = int).tolil()
 
     for j in range(min(w, h)):
-        if pivot_nonzero or np.isclose(U[j, j], 0):
+        if pivot_nonzero or abs(U[j, j]) < 1e-12:
             f_max = np.argmax(np.abs(U[j:, j])) + j
             U[[j, f_max]] = U[[f_max, j]]
             inter_j, inter_f = P[[j, f_max]].nonzero()[1]
             P[j, inter_j] = P[f_max, inter_f] = 0
             P[j, inter_f] = P[f_max, inter_j] = 1
 
-        U[j + 1 :, j] = U[j + 1:, j] / U[j, j]
-        U[j + 1:, j + 1:] = U[j + 1 :, j + 1 :] - U[j, j + 1:] * U[j + 1 :, [j]]
+        if U[j, j]:
+            U[j + 1 :, j] /= U[j, j]
+            U[j + 1:, j + 1:] -= U[j, j + 1:] * U[j + 1 :, [j]]
 
-    L = np.tril(U, k = -1)
-    if h > w: U = U[:w - h]
-    if h < w: L = L[:, :h - w]
+    L = np.tril(U, k = -1)[:, :h]
+    U = U[:w]
     return P.tocsr().T, L + np.eye(*L.shape), np.triu(U)
 
 
@@ -43,6 +43,16 @@ def det_lu(A : np.array, pivot_nonzero = False) -> float:
     p, l, u = lu(A, pivot_nonzero = pivot_nonzero)
     return det_p(p) * np.prod(np.diagonal(u))
 
+def inverse_lu(A):
+    if A.shape[0] != A.shape[1]: raise Exception('Only square matrixes have an inverse')
+    p, l, u = lu(A)
+    if np.count_nonzero(np.diagonal(u) == 0) > 0: raise Exception ('Singular matrix')
+
+    k = np.eye(*A.shape)
+    inv_l = solve_triangular(l, k, lower = True)
+    inv_u = solve_triangular(u, k, lower = False)
+
+    return (p.dot(inv_l.T.dot(inv_u.T))).T
 
 def test_leastsq():
     tests = 1000
@@ -76,7 +86,17 @@ def test_det():
 
     print('Worked det')
 
+from Useful.Timer import timer
 if __name__ == '__main__':
     # test_leastsq()
-    test_det()
+    # test_det()
+
+    A = np.random.randint(-10, 10, (800, 800))
+    print(timer(lu, A))
+    # A[:, 2] = A[:, 0]
+
+    # i1 = inverse_lu(A)
+    # i2 = np.linalg.inv(A)
+
+    # print(np.allclose(i1, i2))
 
