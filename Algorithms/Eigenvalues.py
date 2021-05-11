@@ -1,7 +1,6 @@
-from QR import qr
-import numpy as np
+from QR2_Householder import qr, np
 
-def eigenvalues(A, method = 'qr'):
+def eigenvalues(A):
     if A.shape == (1, 1): return np.array(A[0])
     T = A.copy()
     ITER = 5500

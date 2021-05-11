@@ -55,6 +55,3 @@ def test():
            return
 
     print('Worked')
-
-test()
-input()

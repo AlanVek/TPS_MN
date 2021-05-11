@@ -21,6 +21,13 @@ def qr(A : np.array, det = False):
     if not det: return qt.T, qt.dot(A)
     return qt.T, qt.dot(A), hr
 
+def leastsq_qr(A : np.array, b : np.array) -> np.array:
+    if A.shape[1] > A.shape[0]: return np.zeros(b.shape)
+
+    q, r = qr(A)
+    y = q.T.dot(b)
+    return solve_triangular(r, y, lower = False)
+
 
 def det_qr(A : np.array) -> float:
     if A.shape[0] != A.shape[1]: raise Exception('Matrix must be square')

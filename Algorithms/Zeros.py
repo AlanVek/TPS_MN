@@ -35,28 +35,21 @@ def fixed_point(f, x, tol, maxiter):
 
 
 def newton_raphson(f, deriv, x_ini, tol, maxiter):
-
     """ Solves f(x) = 0 """
-
     for i in range(maxiter):
         x_k = x_ini - f(x_ini) / deriv(x_ini)
         if abs(x_k - x_ini) <= tol: return x_k
         x_ini = x_k
-
     return x_ini
 
 
 def secante(f, x_ini1, x_ini2, tol, maxiter):
-
     """ Solves f(x) = 0 """
-
     f_1, f_2 = f(x_ini1), f(x_ini2)
     for i in range(maxiter):
         x_k = x_ini2 - f_2 / (f_2 - f_1) * (x_ini2 - x_ini1)
         if abs(x_k - x_ini2) <= tol: return x_k
-
         x_ini1, f_1, x_ini2, f_2 = x_ini2, f_2, x_k, f(x_k)
-
     return x_ini2
 
 if __name__ == '__main__':

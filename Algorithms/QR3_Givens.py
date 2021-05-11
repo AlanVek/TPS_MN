@@ -13,14 +13,7 @@ def givens(a, b):
     res[1 - m] = res[m] * tau
     return res
 
-def givens2(vals):
-    a, b = vals
-    res, m = np.zeros(2), 1 - int(abs(a) > abs(b))
-    if m: tau = a / b
-    else: tau = b / a
-    res[m] = 1 / np.sqrt(1 + tau**2)
-    res[1 - m] = res[m] * tau
-    return res
+def givens2(vals): return givens(*vals)
 
 
 # Funciona bien para matrices no cuadradas.
