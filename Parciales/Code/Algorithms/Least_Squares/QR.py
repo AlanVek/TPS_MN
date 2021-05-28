@@ -1,6 +1,6 @@
 import numpy as np
-from Solve_Triangular import solve_triangular
-from scipy.linalg import lstsq
+from Code.Algorithms.Least_Squares.Solve_Triangular import solve_triangular
+
 
 def qr(base, safe = False, det = False):
     h, w = base.shape
@@ -54,7 +54,6 @@ def inverse_qr(A : np.array, safe = False) -> np.array:
     return solve_triangular(r, np.eye(*A.shape), lower = False).dot(q.T)
 
 
-from time import time
 if __name__ == '__main__':
     # tests = 1000
     # start = time()

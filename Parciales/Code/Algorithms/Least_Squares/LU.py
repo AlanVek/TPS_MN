@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.sparse import eye as sparse_eye
-from Solve_Triangular import solve_triangular
 from scipy.linalg import lstsq
+from Code.Algorithms.Least_Squares.Solve_Triangular import solve_triangular
 
 def lu(A : np.array, pivot_nonzero = False):
     h, w = A.shape

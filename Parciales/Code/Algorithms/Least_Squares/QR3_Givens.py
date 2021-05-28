@@ -1,7 +1,6 @@
 import numpy as np
-from QR import qr as qr_old
-from QR2_Householder import qr as qr2
-from Useful.Timer import timer
+# from QR import qr as qr_old
+# from QR2_Householder import qr as qr2
 from scipy.sparse import eye as sparse_eye
 
 
@@ -80,7 +79,3 @@ A = np.random.randint(-10, 10, (2, 2))
 
 # print(np.allclose(A, q.dot(r).round(2)))
 
-print('Old Version:', timer(qr_old, A, safe = True))
-print('Givens para:', timer(qr4, A))
-print('Givens sequ:', timer(qr3, A))
-print('Householder:', timer(qr2, A))
