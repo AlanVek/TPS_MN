@@ -11,8 +11,9 @@ def derivs(t, _x):
     res_k = [x - k]
     res_k.append(k - res_k[0])
     res_k.append(res_k[0] - res_k[1])
+    res_k.append(res_k[1] - res_k[2])
 
-    res_x = [k, res_k[0], res_k[1]]
+    res_x = [k, res_k[0], res_k[1], res_k[2]]
 
     return [res_k, res_x]
 
